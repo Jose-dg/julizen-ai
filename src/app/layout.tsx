@@ -15,32 +15,32 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "DaydreamShop - Descubre tu Estilo",
-  description: "Encuentra productos únicos y personalizados con la ayuda de nuestra IA inteligente. Tu tienda de ensueño con las mejores marcas y tendencias.",
-  keywords: ["moda", "estilo", "productos únicos", "IA", "recomendaciones", "shopping", "tienda online"],
-  authors: [{ name: "DaydreamShop Team" }],
-  creator: "DaydreamShop",
-  publisher: "DaydreamShop",
+  title: "Money for gamers - Tu tienda de gaming",
+  description: "Encuentra los mejores códigos, gift cards y productos para gamers. PlayStation, Xbox, Steam y más. Compra segura y entrega instantánea.",
+  keywords: ["gaming", "gift cards", "códigos", "PlayStation", "Xbox", "Steam", "Nintendo", "gamers", "tienda gaming"],
+  authors: [{ name: "Money for gamers Team" }],
+  creator: "Money for gamers",
+  publisher: "Money for gamers",
   formatDetection: {
     email: false,
     address: false,
     telephone: false,
   },
-  metadataBase: new URL('https://daydream.ing'),
+  metadataBase: new URL('https://moneyforgamers.ing'),
   alternates: {
     canonical: '/',
   },
   openGraph: {
-    title: "DaydreamShop - Descubre tu Estilo",
-    description: "Encuentra productos únicos y personalizados con la ayuda de nuestra IA inteligente.",
-    url: 'https://daydream.ing',
-    siteName: 'DaydreamShop',
+    title: "Money for gamers - Tu tienda de gaming",
+    description: "Encuentra los mejores códigos, gift cards y productos para gamers. Compra segura y entrega instantánea.",
+    url: 'https://moneyforgamers.com',
+    siteName: 'Money for gamers',
     images: [
       {
         url: '/og-image.jpg',
         width: 1200,
         height: 630,
-        alt: 'DaydreamShop - Descubre tu Estilo',
+        alt: 'Money for gamers - Tu tienda de gaming',
       },
     ],
     locale: 'es_ES',
@@ -48,10 +48,10 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: "DaydreamShop - Descubre tu Estilo",
-    description: "Encuentra productos únicos y personalizados con la ayuda de nuestra IA inteligente.",
+    title: "Money for gamers - Tu tienda de gaming",
+    description: "Encuentra los mejores códigos, gift cards y productos para gamers. Compra segura y entrega instantánea.",
     images: ['/og-image.jpg'],
-    creator: '@daydreamshop',
+    creator: '@moneyforgamers',
   },
   robots: {
     index: true,
