@@ -16,8 +16,8 @@ interface GlobalContextType {
 const GlobalContext = createContext<GlobalContextType | undefined>(undefined);
 
 export function GlobalProvider({ children }: { children: React.ReactNode }) {
-    const [currency, setCurrency] = useState<CurrencyCode>('USD');
-    const [language, setLanguage] = useState<LanguageCode>('en');
+    const [currency, setCurrency] = useState<CurrencyCode>('COP');
+    const [language, setLanguage] = useState<LanguageCode>('es');
 
     // Persist to localStorage (optional, for better UX)
     useEffect(() => {

@@ -147,7 +147,7 @@ const REGIONS = [
 
 export function ProductHero() {
     const [denomination, setDenomination] = useState(50);
-    const [selectedRegion, setSelectedRegion] = useState(REGIONS[0]);
+    const [selectedRegion, setSelectedRegion] = useState(REGIONS.find(r => r.id === 'co') || REGIONS[0]);
 
     return (
         <section className="container mx-auto px-4 py-8 md:py-12 lg:py-16">
