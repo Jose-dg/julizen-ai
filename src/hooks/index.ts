@@ -9,4 +9,5 @@ export { useBrands } from './use-brands';
 export { useRecommendations } from './use-recommendations';
 
 // Hook existente
-export { useMobile } from './use-mobile';
+export { useIsMobile as useMobile } from './use-mobile';
+export { useCartStore } from '@/stores/cart.store';

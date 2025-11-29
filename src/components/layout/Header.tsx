@@ -1,9 +1,23 @@
+'use client';
+
 import React from 'react';
 import Link from 'next/link';
-import { Search, User, ShoppingCart } from 'lucide-react';
+import { Search, User, ShoppingCart, Globe } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { useGlobal } from '@/lib/global-context';
+import { useCart } from '@/lib/cart-context';
+import { CURRENCIES, CurrencyCode } from '@/lib/pricing-data';
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 export function Header() {
+    const { currency, setCurrency, language, setLanguage } = useGlobal();
+    const { items } = useCart();
+
     return (
         <header className="bg-white border-b border-gray-100 sticky top-0 z-50">
             <div className="container mx-auto px-4 h-16 flex items-center justify-between">
@@ -37,6 +51,47 @@ export function Header() {
                         Support
                     </Link>
 
+                    {/* Currency Selector */}
+                    <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                            <button className="flex items-center gap-1 text-sm font-medium hover:text-red-600 transition-colors">
+                                <Globe className="w-4 h-4" />
+                                {currency}
+                            </button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                            {Object.keys(CURRENCIES).map((code) => (
+                                <DropdownMenuItem
+                                    key={code}
+                                    onClick={() => setCurrency(code as CurrencyCode)}
+                                    className="cursor-pointer"
+                                >
+                                    {CURRENCIES[code as CurrencyCode].symbol} {code}
+                                </DropdownMenuItem>
+                            ))}
+                        </DropdownMenuContent>
+                    </DropdownMenu>
+
+                    {/* Language Selector */}
+                    <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                            <button className="flex items-center gap-1 text-sm font-medium hover:text-red-600 transition-colors uppercase">
+                                {language}
+                            </button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                            <DropdownMenuItem onClick={() => setLanguage('en')} className="cursor-pointer">
+                                🇺🇸 English
+                            </DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => setLanguage('es')} className="cursor-pointer">
+                                🇪🇸 Español
+                            </DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => setLanguage('pt')} className="cursor-pointer">
+                                🇧🇷 Português
+                            </DropdownMenuItem>
+                        </DropdownMenuContent>
+                    </DropdownMenu>
+
                     <div className="flex items-center gap-3 text-gray-700">
                         <button className="hover:text-red-600 transition-colors">
                             <Search className="w-5 h-5" />
@@ -46,9 +101,11 @@ export function Header() {
                         </button>
                         <button className="relative hover:text-red-600 transition-colors">
                             <ShoppingCart className="w-5 h-5" />
-                            <span className="absolute -top-1 -right-1 bg-red-600 text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">
-                                0
-                            </span>
+                            {items.length > 0 && (
+                                <span className="absolute -top-1 -right-1 bg-red-600 text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">
+                                    {items.reduce((acc, item) => acc + item.quantity, 0)}
+                                </span>
+                            )}
                         </button>
                     </div>
                 </div>

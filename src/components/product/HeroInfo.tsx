@@ -1,40 +1,66 @@
 'use client';
 
-import React, { useState } from 'react';
-import { Badge } from '@/components/ui/badge';
+import { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Check, Truck, Star } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
+import { Check, Truck, Zap, Globe, ShieldCheck } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { motion } from 'framer-motion';
 import { useCart } from '@/lib/cart-context';
 import { useRouter } from 'next/navigation';
+import { useGlobal } from '@/lib/global-context';
+import { PLAYSTATION_PRICING, EXCHANGE_RATES } from '@/lib/pricing-data';
 
-export function HeroInfo() {
-    const { addItem } = useCart();
+const DENOMINATIONS = [5, 10, 25, 50, 75, 100, 150, 250];
+
+interface HeroInfoProps {
+    selectedDenomination: number;
+    onSelectDenomination: (amount: number) => void;
+    selectedRegion: any;
+    onSelectRegion: (region: any) => void;
+    regions: any[];
+}
+
+export function HeroInfo({
+    selectedDenomination,
+    onSelectDenomination,
+    selectedRegion,
+    onSelectRegion,
+    regions
+}: HeroInfoProps) {
+    const { addItem, clearCart } = useCart();
     const router = useRouter();
-    const [selectedColor, setSelectedColor] = useState<'red' | 'black'>('red');
-    const [selectedBundle, setSelectedBundle] = useState<1 | 2 | 4>(2);
+    const { currency, formatPrice } = useGlobal();
+
+    // const [selectedRegion, setSelectedRegion] = useState(REGIONS[0]);
+
+    // Calculate Price based on Region Currency and Global Currency
+    // Formula: (Denomination * RegionRate) / GlobalRate
+    const regionRate = EXCHANGE_RATES[selectedRegion.currencyCode] || 3800;
+    const globalRate = EXCHANGE_RATES[currency] || 3800;
+
+    // Value in COP
+    const valueInCOP = selectedDenomination * regionRate;
+
+    // Price in Global Currency
+    const price = valueInCOP / globalRate;
+
+    const oldPrice = price * 1.1;
 
     const handleAddToCart = () => {
-        let price = 59;
-        if (selectedBundle === 2) price = 98;
-        if (selectedBundle === 4) price = 180;
-
         addItem({
-            id: `renoheal-cupping-${selectedBundle}`,
-            variantId: `var-${selectedBundle}-${selectedColor}`,
-            title: `Renoheal Cupping Massager (${selectedBundle}x)`,
-            price: { amount: price, currencyCode: 'EUR' },
+            id: `psn-card-${selectedRegion.id}-${selectedDenomination}-${currency}`,
+            variantId: `var-${selectedRegion.id}-${selectedDenomination}-${currency}`,
+            title: `PlayStation Store Gift Card (${selectedRegion.name})`,
+            price: { amount: price, currencyCode: currency },
             quantity: 1,
-            image: 'https://placehold.co/600x600/d00000/ffffff?text=Cupping+Massager',
-            variantTitle: selectedColor
+            image: 'https://placehold.co/600x600/00439c/ffffff?text=PSN+Card',
+            variantTitle: `${selectedRegion.currency}${selectedDenomination} - ${selectedRegion.name}`
         });
-
-        // Optional: Open cart drawer or redirect. For now, redirect to checkout for "Buy It Now" flow or just show success.
-        // User asked for "Add to Cart" -> usually stays on page, but for this flow I'll just add.
     };
 
     const handleBuyNow = () => {
+        clearCart();
         handleAddToCart();
         router.push('/checkout');
     };
@@ -42,184 +68,119 @@ export function HeroInfo() {
     return (
         <div className="flex flex-col gap-6">
             {/* Label */}
-            <div>
-                <Badge variant="secondary" className="bg-red-50 text-red-700 hover:bg-red-100 uppercase tracking-wider font-bold text-[10px] px-2 py-1">
-                    Hot Product | Low Stock
+            <div className="flex items-center gap-2">
+                <Badge variant="destructive" className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 text-xs font-bold tracking-widest uppercase">
+                    Digital Code
+                </Badge>
+                <Badge variant="outline" className="text-blue-600 border-blue-200 text-xs font-bold tracking-widest uppercase">
+                    Instant Delivery
                 </Badge>
             </div>
 
-            {/* Title */}
-            <h1 className="text-4xl md:text-5xl font-bold tracking-tight uppercase leading-none">
-                Renoheal Cupping<br />Massager
-            </h1>
+            {/* Title & Price */}
+            <div>
+                <h1 className="text-4xl md:text-5xl font-black text-gray-900 tracking-tight mb-2">
+                    PLAYSTATION STORE<br />
+                </h1>
+                <div className="flex items-end gap-3">
+                    <span className="text-4xl font-black text-blue-600">
+                        {formatPrice(price)}
+                    </span>
+                    <span className="text-xl text-gray-400 line-through mb-1">
+                        {formatPrice(oldPrice)}
+                    </span>
+                    <Badge className="bg-green-500 hover:bg-green-600 mb-2">
+                        SAVE 10%
+                    </Badge>
+                </div>
+            </div>
 
-            {/* Price */}
-            <div className="flex items-end gap-3">
-                <span className="text-4xl font-bold text-red-600">€59,00</span>
-                <span className="text-xl text-gray-400 line-through mb-1">€99,00</span>
-                <Badge className="bg-red-600 hover:bg-red-700 mb-2">
-                    SAVE 40%
-                </Badge>
+            {/* Region Selector */}
+            <div className="space-y-3">
+                <div className="flex justify-between items-center">
+                    <span className="text-sm font-bold text-gray-900 uppercase tracking-wider">Select Region</span>
+                    <span className="text-xs font-medium text-blue-600">{selectedRegion.name} Store</span>
+                </div>
+                <div className="grid grid-cols-6 gap-2">
+                    {regions.map((region) => (
+                        <button
+                            key={region.id}
+                            onClick={() => onSelectRegion(region)}
+                            className={cn(
+                                "flex flex-col items-center justify-center p-3 rounded-xl border-2 transition-all duration-200",
+                                selectedRegion.id === region.id
+                                    ? "border-blue-600 bg-blue-50 text-blue-700 shadow-sm"
+                                    : "border-gray-100 bg-white text-gray-600 hover:border-blue-200 hover:bg-gray-50"
+                            )}
+                        >
+                            <span className="text-2xl mb-1">{region.flag}</span>
+                            <span className="text-xs font-bold">{region.name}</span>
+                        </button>
+                    ))}
+                </div>
+            </div>
+
+            {/* Denomination Selector */}
+            <div className="space-y-3">
+                <span className="text-sm font-bold text-gray-900 uppercase tracking-wider">Select Amount</span>
+                <div className="grid grid-cols-8 gap-2">
+                    {DENOMINATIONS.map((amount) => (
+                        <button
+                            key={amount}
+                            onClick={() => onSelectDenomination(amount)}
+                            className={cn(
+                                "h-12 rounded-lg border-2 font-bold text-sm transition-all duration-200",
+                                selectedDenomination === amount
+                                    ? "border-blue-600 bg-blue-600 text-white shadow-md transform scale-105"
+                                    : "border-gray-200 bg-white text-gray-700 hover:border-blue-400 hover:text-blue-600"
+                            )}
+                        >
+                            {amount}
+                        </button>
+                    ))}
+                </div>
             </div>
 
             {/* Benefits */}
-            <ul className="space-y-2">
+            {/* <div className="space-y-2">
                 {[
-                    "Relieve knots and aches",
-                    "Increase blood flow and mobility",
-                    "Improve muscle recovery"
+                    "Code delivered immediately via email",
+                    "Valid for all PS4 & PS5 consoles",
+                    "No expiration date",
+                    "Official Authorized Retailer"
                 ].map((benefit, i) => (
-                    <li key={i} className="flex items-center gap-2 text-gray-700 font-medium">
-                        <span className="flex items-center justify-center w-5 h-5 rounded-full bg-green-100 text-green-600 text-xs">
-                            <Check className="w-3 h-3" />
-                        </span>
+                    <div key={i} className="flex items-center gap-3 text-sm text-gray-600">
+                        <div className="w-5 h-5 rounded-full bg-green-100 flex items-center justify-center shrink-0">
+                            <Check className="w-3 h-3 text-green-600" strokeWidth={3} />
+                        </div>
                         {benefit}
-                    </li>
+                    </div>
                 ))}
-            </ul>
-
-            {/* Color Selector */}
-            <div className="space-y-3">
-                <span className="text-sm font-bold uppercase tracking-wide text-gray-500">Color</span>
-                <div className="flex gap-3">
-                    <button
-                        onClick={() => setSelectedColor('red')}
-                        className={cn(
-                            "w-10 h-10 rounded-full bg-red-600 border-2 transition-all",
-                            selectedColor === 'red' ? "border-black ring-2 ring-offset-2 ring-red-200" : "border-transparent"
-                        )}
-                        aria-label="Select Red"
-                    />
-                    <button
-                        onClick={() => setSelectedColor('black')}
-                        className={cn(
-                            "w-10 h-10 rounded-full bg-black border-2 transition-all",
-                            selectedColor === 'black' ? "border-black ring-2 ring-offset-2 ring-gray-200" : "border-transparent"
-                        )}
-                        aria-label="Select Black"
-                    />
-                </div>
-            </div>
-
-            {/* Bundle & Save */}
-            <div className="border border-gray-200 rounded-xl p-4 md:p-6 space-y-4 bg-white shadow-sm">
-                <h3 className="text-center font-bold text-lg uppercase tracking-wide">Bundle & Save</h3>
-
-                <div className="space-y-3">
-                    {/* Option 1 */}
-                    <BundleOption
-                        title="Buy 1"
-                        subtitle="€59/per Renoheal unit"
-                        price="€59"
-                        oldPrice="€99"
-                        isSelected={selectedBundle === 1}
-                        onClick={() => setSelectedBundle(1)}
-                    />
-
-                    {/* Option 2 */}
-                    <BundleOption
-                        title="Buy 2"
-                        subtitle="Most Popular"
-                        price="€98"
-                        oldPrice="€198"
-                        isSelected={selectedBundle === 2}
-                        onClick={() => setSelectedBundle(2)}
-                        badge="Most Popular"
-                        freeShipping
-                    />
-
-                    {/* Option 4 */}
-                    <BundleOption
-                        title="Buy 4"
-                        subtitle="Best Deal"
-                        price="€180"
-                        oldPrice="€396"
-                        isSelected={selectedBundle === 4}
-                        onClick={() => setSelectedBundle(4)}
-                        badge="Best Deal"
-                        freeShipping
-                        perUnit="€45/unit"
-                    />
-                </div>
-            </div>
+            </div> */}
 
             {/* CTAs */}
             <div className="space-y-3 pt-2">
-                <Button onClick={handleAddToCart} className="w-full h-14 text-lg font-bold uppercase tracking-wider bg-red-600 hover:bg-red-700 hover:scale-[1.02] transition-all shadow-lg shadow-red-200">
+                <Button onClick={handleAddToCart} className="w-full h-14 text-lg font-bold uppercase tracking-wider bg-blue-600 hover:bg-blue-700 hover:scale-[1.02] transition-all shadow-lg shadow-blue-200">
                     Add to Cart
                 </Button>
-                <Button onClick={handleBuyNow} variant="outline" className="w-full h-12 text-base font-bold uppercase tracking-wider border-red-200 text-red-600 hover:bg-red-50 hover:text-red-700">
+                <Button onClick={handleBuyNow} variant="outline" className="w-full h-12 text-base font-bold uppercase tracking-wider border-blue-200 text-blue-600 hover:bg-blue-50 hover:text-blue-700">
                     Buy It Now
                 </Button>
             </div>
 
-            <div className="flex items-center justify-center gap-2 text-xs text-gray-500">
-                <Truck className="w-4 h-4" />
-                <span>Free shipping on orders over €90</span>
-            </div>
-        </div>
-    );
-}
-
-function BundleOption({
-    title,
-    subtitle,
-    price,
-    oldPrice,
-    isSelected,
-    onClick,
-    badge,
-    freeShipping,
-    perUnit
-}: {
-    title: string,
-    subtitle: string,
-    price: string,
-    oldPrice: string,
-    isSelected: boolean,
-    onClick: () => void,
-    badge?: string,
-    freeShipping?: boolean,
-    perUnit?: string
-}) {
-    return (
-        <div
-            onClick={onClick}
-            className={cn(
-                "relative flex items-center justify-between p-4 rounded-lg border-2 cursor-pointer transition-all",
-                isSelected
-                    ? "border-red-600 bg-red-50/30"
-                    : "border-gray-100 hover:border-red-200"
-            )}
-        >
-            {badge && (
-                <span className="absolute -top-3 right-4 bg-red-600 text-white text-[10px] font-bold px-2 py-1 rounded-full shadow-sm">
-                    {badge}
-                </span>
-            )}
-
-            <div className="flex items-center gap-3">
-                <div className={cn(
-                    "w-5 h-5 rounded-full border-2 flex items-center justify-center",
-                    isSelected ? "border-red-600" : "border-gray-300"
-                )}>
-                    {isSelected && <div className="w-2.5 h-2.5 rounded-full bg-red-600" />}
+            <div className="flex items-center justify-center gap-4 text-xs text-gray-500 border-t border-gray-100 pt-4">
+                <div className="flex items-center gap-1">
+                    <Zap className="w-4 h-4 text-yellow-500" />
+                    <span>Instant Email Delivery</span>
                 </div>
-                <div>
-                    <div className="font-bold text-gray-900">{title}</div>
-                    <div className="text-xs text-gray-500">{subtitle}</div>
-                    {freeShipping && (
-                        <div className="text-[10px] font-bold text-green-600 flex items-center gap-1 mt-0.5">
-                            <Truck className="w-3 h-3" /> Free Shipping
-                        </div>
-                    )}
+                <div className="flex items-center gap-1">
+                    <ShieldCheck className="w-4 h-4 text-green-500" />
+                    <span>Secure Payment</span>
                 </div>
-            </div>
-
-            <div className="text-right">
-                <div className="font-bold text-lg text-red-600">{price}</div>
-                <div className="text-xs text-gray-400 line-through">{oldPrice}</div>
-                {perUnit && <div className="text-[10px] font-medium text-gray-500">{perUnit}</div>}
+                <div className="flex items-center gap-1">
+                    <Globe className="w-4 h-4 text-blue-500" />
+                    <span>Global Activation</span>
+                </div>
             </div>
         </div>
     );

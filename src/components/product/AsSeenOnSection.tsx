@@ -18,58 +18,70 @@ export function AsSeenOnSection() {
             {/* Logos */}
             <div className="container mx-auto px-4 text-center mb-12">
                 <h3 className="text-sm font-bold uppercase tracking-widest text-gray-400 mb-8">As Seen On</h3>
-                <div className="flex flex-wrap justify-center items-center gap-8 md:gap-16 opacity-50 grayscale">
-                    {LOGOS.map((logo) => (
-                        <span key={logo} className="text-2xl md:text-3xl font-black font-serif text-gray-800">
-                            {logo}
+                {/* Logos */}
+                <div className="flex flex-wrap justify-center items-center gap-8 md:gap-16 opacity-50 grayscale hover:grayscale-0 transition-all duration-500">
+                    {['IGN', 'KOTAKU', 'GAMESPOT', 'POLYGON', 'EUROGAMER'].map((brand) => (
+                        <span key={brand} className="text-2xl font-black text-gray-400 hover:text-blue-600 cursor-default">
+                            {brand}
                         </span>
                     ))}
                 </div>
             </div>
 
-            {/* Ticker */}
-            <div className="bg-black text-white py-3 overflow-hidden whitespace-nowrap mb-16">
-                <div className="animate-marquee inline-block">
+            {/* Scrolling Ticker */}
+            <div className="bg-blue-600 py-3 overflow-hidden whitespace-nowrap">
+                <motion.div
+                    animate={{ x: [0, -1000] }}
+                    transition={{ repeat: Infinity, duration: 20, ease: "linear" }}
+                    className="flex gap-8 text-white font-bold text-sm uppercase tracking-widest"
+                >
                     {[...Array(10)].map((_, i) => (
-                        <span key={i} className="mx-4 text-sm font-bold uppercase tracking-widest">
-                            EMPOWER YOUR LIFE · REVITALIZE YOUR BODY ·
+                        <span key={i} className="flex items-center gap-8">
+                            INSTANT DIGITAL DELIVERY • OFFICIAL RETAILER • NO EXPIRATION DATE • SECURE PAYMENT •
                         </span>
                     ))}
-                </div>
+                </motion.div>
             </div>
 
-            {/* Content */}
-            <div className="container mx-auto px-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-                    {/* Left: Image */}
-                    <div className="relative aspect-[4/5] rounded-2xl overflow-hidden bg-gray-100">
+            {/* Stats / Lifestyle */}
+            <div className="container mx-auto px-4 py-20">
+                <div className="grid md:grid-cols-2 gap-12 items-center">
+                    <div className="space-y-8">
+                        <h2 className="text-4xl font-black text-gray-900 leading-tight">
+                            TRUSTED BY <span className="text-blue-600">MILLIONS</span> OF GAMERS WORLDWIDE
+                        </h2>
+                        <p className="text-gray-600 text-lg">
+                            We are the #1 destination for digital gift cards. Join our community and start playing your favorite games instantly.
+                        </p>
+
+                        <div className="grid grid-cols-2 gap-6">
+                            {[
+                                { label: 'Codes Delivered', value: '1M+' },
+                                { label: 'Happy Gamers', value: '500K+' },
+                                { label: 'Support', value: '24/7' },
+                                { label: 'Rating', value: '4.9/5' },
+                            ].map((stat, i) => (
+                                <motion.div
+                                    key={i}
+                                    initial={{ opacity: 0, y: 20 }}
+                                    whileInView={{ opacity: 1, y: 0 }}
+                                    transition={{ delay: i * 0.1 }}
+                                    className="bg-gray-50 p-6 rounded-2xl border border-gray-100"
+                                >
+                                    <div className="text-3xl font-black text-blue-600 mb-1">{stat.value}</div>
+                                    <div className="text-sm font-bold text-gray-500 uppercase">{stat.label}</div>
+                                </motion.div>
+                            ))}
+                        </div>
+                    </div>
+
+                    <div className="relative h-[500px] rounded-3xl overflow-hidden shadow-2xl">
                         <Image
-                            src="https://placehold.co/600x800/f0f0f0/333333?text=Lifestyle+Image"
-                            alt="Woman using Renoheal"
+                            src="https://placehold.co/800x1000/00439c/ffffff?text=Gaming+Setup"
+                            alt="Gaming Setup"
                             fill
                             className="object-cover"
                         />
-                    </div>
-
-                    {/* Right: Stats */}
-                    <div className="space-y-6">
-                        {STATS.map((stat, i) => (
-                            <motion.div
-                                key={i}
-                                initial={{ opacity: 0, x: 50 }}
-                                whileInView={{ opacity: 1, x: 0 }}
-                                transition={{ delay: i * 0.2, duration: 0.5 }}
-                                viewport={{ once: true }}
-                                className="flex items-center gap-6 p-6 bg-white rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow"
-                            >
-                                <div className="flex items-center justify-center w-20 h-20 rounded-full bg-red-50 text-red-600 font-black text-2xl shrink-0">
-                                    {stat.pct}
-                                </div>
-                                <p className="text-lg font-bold text-gray-800 uppercase tracking-wide">
-                                    {stat.text}
-                                </p>
-                            </motion.div>
-                        ))}
                     </div>
                 </div>
             </div>

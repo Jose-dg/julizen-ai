@@ -7,27 +7,41 @@ export default function CheckoutPage() {
     return (
         <div className="min-h-screen bg-white flex flex-col md:flex-row">
             {/* Left Column: Form */}
-            <div className="flex-1 flex flex-col">
-                <header className="p-6 border-b md:border-none">
+            <div className="flex-1 md:w-[50%] flex flex-col">
+                <header className="px-6 py-6 md:px-12 md:py-8">
                     <Link href="/" className="text-2xl font-bold tracking-tighter flex items-center">
-                        <span className="text-gray-800">RENO</span>
-                        <span className="text-black">HEAL</span>
+                        <span className="text-black-800">MONEY FOR GAMERS</span>
+                        
                     </Link>
                 </header>
-                <main className="flex-1">
+                <main className="flex-1 px-6 md:px-12">
                     <CheckoutForm />
                 </main>
-                <footer className="p-6 text-xs text-gray-400 border-t md:border-none mt-auto">
-                    &copy; 2024 Renoheal. All rights reserved.
+                <footer className="px-2 py-6 md:px-12 text-xs text-gray-500 mt-auto">
+                    <div className="flex items-center gap-4 flex-wrap">
+                        <span>&copy; 2024 Maverick</span>
+                        <span className="text-gray-300">•</span>
+                        <Link href="/refund-policy" className="hover:text-gray-700">Refund policy</Link>
+                        <span className="text-gray-300">•</span>
+                        <Link href="/privacy-policy" className="hover:text-gray-700">Privacy policy</Link>
+                        <span className="text-gray-300">•</span>
+                        <Link href="/terms-of-service" className="hover:text-gray-700">Terms of service</Link>
+                    </div>
                 </footer>
             </div>
 
-            {/* Right Column: Summary */}
-            <div className="md:w-[45%] lg:w-[40%] bg-gray-50 border-l border-gray-200 hidden md:block">
-                <OrderSummary />
+            {/* Right Column: Summary - Estilo Shopify */}
+            {/* <div className="md:w-[50%] bg-gray-50 border-l border-gray-200 hidden md:flex flex-col"> */}
+            <div className="md:w-[50%] bg-gray-50 border-l border-gray-200 hidden md:flex flex-col">
+                <div className="px-12 py-8">
+                    <OrderSummary />
+                </div>
             </div>
 
-            {/* Mobile Summary Toggle (Optional, could be added later) */}
+            {/* Mobile Summary (mostrar arriba en mobile) */}
+            <div className="md:hidden bg-gray-50 border-t border-b border-gray-200 px-6 py-4">
+                <OrderSummary />
+            </div>
         </div>
     );
 }

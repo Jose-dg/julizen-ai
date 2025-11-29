@@ -7,8 +7,11 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Tag } from 'lucide-react';
 
+import { useGlobal } from '@/lib/global-context';
+
 export function OrderSummary() {
     const { items, totalPrice } = useCart();
+    const { currency, formatPrice } = useGlobal();
     const [discountCode, setDiscountCode] = useState('');
 
     // Dummy shipping calculation
@@ -16,7 +19,8 @@ export function OrderSummary() {
     const finalTotal = totalPrice.amount + shipping;
 
     return (
-        <div className="bg-gray-50 p-6 md:p-8 rounded-lg md:h-screen md:sticky md:top-0 border-l border-gray-200">
+        // <div className="bg-gray-50 p-6 md:p-8 rounded-lg md:h-screen md:sticky md:top-0 border-l border-gray-200">
+        <div className="bg-gray-50 p-6 md:p-8 rounded-lg md:h-screen md:sticky md:top-0">
             <div className="space-y-4 mb-6">
                 {items.map((item, i) => (
                     <div key={`${item.variantId}-${i}`} className="flex items-center gap-4">
@@ -36,7 +40,7 @@ export function OrderSummary() {
                             <p className="text-xs text-gray-500">{item.variantTitle}</p>
                         </div>
                         <div className="font-bold text-sm text-gray-800">
-                            €{(item.price.amount * item.quantity).toFixed(2)}
+                            {formatPrice(item.price.amount * item.quantity)}
                         </div>
                     </div>
                 ))}
@@ -57,12 +61,12 @@ export function OrderSummary() {
             <div className="space-y-3 border-t border-gray-200 pt-6 text-sm">
                 <div className="flex justify-between text-gray-600">
                     <span>Subtotal</span>
-                    <span className="font-medium">€{totalPrice.amount.toFixed(2)}</span>
+                    <span className="font-medium">{formatPrice(totalPrice.amount)}</span>
                 </div>
                 <div className="flex justify-between text-gray-600">
                     <span>Shipping</span>
                     <span className="font-medium">
-                        {shipping === 0 ? 'Free' : `€${shipping.toFixed(2)}`}
+                        {shipping === 0 ? 'Free' : formatPrice(shipping)}
                     </span>
                 </div>
             </div>
@@ -70,8 +74,8 @@ export function OrderSummary() {
             <div className="flex justify-between items-center border-t border-gray-200 pt-6 mt-6">
                 <span className="font-bold text-lg">Total</span>
                 <div className="text-right">
-                    <span className="text-xs text-gray-500 mr-2">EUR</span>
-                    <span className="font-bold text-2xl">€{finalTotal.toFixed(2)}</span>
+                    <span className="text-xs text-gray-500 mr-2">{currency}</span>
+                    <span className="font-bold text-2xl">{formatPrice(finalTotal)}</span>
                 </div>
             </div>
         </div>

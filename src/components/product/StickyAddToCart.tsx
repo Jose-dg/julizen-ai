@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useCart } from '@/lib/cart-context';
+import Image from 'next/image';
 
 export function StickyAddToCart() {
     const { addItem } = useCart();
@@ -12,20 +13,23 @@ export function StickyAddToCart() {
 
     const handleAddToCart = () => {
         addItem({
-            id: 'renoheal-cupping',
-            variantId: 'var-sticky-red',
-            title: 'Renoheal Cupping Massager',
-            price: { amount: 59, currencyCode: 'EUR' },
+            id: 'psn-card-sticky',
+            variantId: 'var-sticky-50',
+            title: 'PlayStation Store Gift Card',
+            price: { amount: 50, currencyCode: 'EUR' },
             quantity: 1,
-            image: 'https://placehold.co/600x600/d00000/ffffff?text=Cupping+Massager',
-            variantTitle: 'Red'
+            image: 'https://placehold.co/600x600/00439c/ffffff?text=PSN+Card',
+            variantTitle: '$50'
         });
     };
 
     useEffect(() => {
         const handleScroll = () => {
-            // Show after scrolling past hero (approx 600px)
-            setIsVisible(window.scrollY > 600);
+            const heroSection = document.getElementById('hero-section');
+            if (heroSection) {
+                const heroBottom = heroSection.getBoundingClientRect().bottom;
+                setIsVisible(heroBottom < 0);
+            }
         };
 
         window.addEventListener('scroll', handleScroll);
@@ -39,19 +43,29 @@ export function StickyAddToCart() {
                     initial={{ y: 100 }}
                     animate={{ y: 0 }}
                     exit={{ y: 100 }}
-                    className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1)] z-50 p-4 md:p-4"
+                    className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-4 shadow-2xl z-50 md:flex items-center justify-between hidden"
                 >
-                    <div className="container mx-auto flex items-center justify-between gap-4">
-                        <div className="hidden md:flex items-center gap-4">
-                            <div className="font-bold text-lg uppercase">Renoheal Cupping Massager</div>
-                            <div className="flex items-center gap-2">
-                                <span className="font-bold text-red-600 text-xl">€59,00</span>
-                                <Badge className="bg-red-600">SAVE 40%</Badge>
+                    <div className="container mx-auto flex items-center justify-between">
+                        <div className="flex items-center gap-4">
+                            <div className="relative w-16 h-16 rounded-lg overflow-hidden border border-gray-200">
+                                <Image
+                                    src="https://placehold.co/600x600/00439c/ffffff?text=PSN+Card"
+                                    alt="Product"
+                                    fill
+                                    className="object-cover"
+                                />
+                            </div>
+                            <div>
+                                <h3 className="font-bold text-gray-900">PlayStation Store Gift Card</h3>
+                                <div className="flex items-center gap-2">
+                                    <span className="font-bold text-blue-600 text-lg">From €10.00</span>
+                                    <Badge variant="secondary" className="bg-green-100 text-green-700">In Stock</Badge>
+                                </div>
                             </div>
                         </div>
 
                         <div className="flex-1 md:flex-none md:w-auto w-full">
-                            <Button onClick={handleAddToCart} className="w-full md:w-64 h-12 text-base font-bold uppercase bg-red-600 hover:bg-red-700 shadow-lg">
+                            <Button onClick={handleAddToCart} className="w-full md:w-64 h-12 text-base font-bold uppercase bg-blue-600 hover:bg-blue-700 shadow-lg">
                                 Add to Cart
                             </Button>
                         </div>

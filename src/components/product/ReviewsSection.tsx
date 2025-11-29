@@ -3,36 +3,38 @@
 import React from 'react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
-import { Star, Truck } from 'lucide-react';
+import { Star, Zap } from 'lucide-react'; // Added Zap
 
 export function ReviewsSection() {
     return (
         <section className="container mx-auto px-4 py-8 max-w-2xl">
             {/* Featured Review */}
-            <div className="flex items-start gap-4 mb-8 p-4 bg-gray-50 rounded-xl border border-gray-100">
-                <Avatar className="w-12 h-12 border-2 border-white shadow-sm">
-                    <AvatarImage src="https://placehold.co/100x100/png?text=A" />
-                    <AvatarFallback>AL</AvatarFallback>
-                </Avatar>
-                <div>
-                    <div className="flex items-center gap-1 mb-1">
-                        {[1, 2, 3, 4, 5].map((i) => (
-                            <Star key={i} className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                        ))}
-                        <span className="text-sm font-bold ml-2">Alex</span>
+            <div className="mb-8 p-4 bg-gray-50 rounded-xl border border-gray-100">
+                <div className="flex items-start gap-4">
+                    <Avatar className="w-12 h-12 border-2 border-blue-100">
+                        <AvatarImage src="https://github.com/shadcn.png" />
+                        <AvatarFallback>MK</AvatarFallback>
+                    </Avatar>
+                    <div>
+                        <div className="flex text-yellow-400 mb-1">
+                            <Star className="w-4 h-4 fill-current" />
+                            <Star className="w-4 h-4 fill-current" />
+                            <Star className="w-4 h-4 fill-current" />
+                            <Star className="w-4 h-4 fill-current" />
+                            <Star className="w-4 h-4 fill-current" />
+                        </div>
+                        <p className="text-gray-800 font-medium italic mb-2">
+                            "Super fast delivery! Received my code in less than 1 minute. Redeemed it on my PS5 immediately. Will buy again!"
+                        </p>
+                        <p className="text-sm text-gray-500 font-bold">- Mike K.</p>
                     </div>
-                    <p className="text-sm text-gray-600 italic">
-                        "Absolutely amazing! I've tried everything for my back pain and this is the only thing that works consistently. Highly recommend!"
-                    </p>
                 </div>
             </div>
 
             {/* Shipping Estimate */}
-            <div className="flex items-center gap-3 mb-8 p-4 bg-green-50 text-green-800 rounded-lg border border-green-100">
-                <Truck className="w-5 h-5" />
-                <span className="text-sm font-medium">
-                    Get it between <strong>Thursday, December 4th</strong> and <strong>Tuesday, December 9th</strong>.
-                </span>
+            <div className="flex items-center gap-3 bg-blue-50 p-4 rounded-lg text-blue-800 text-sm font-medium mb-8">
+                <Zap className="w-5 h-5 text-blue-600" />
+                <span>Estimated Delivery: <strong>Instantly via Email</strong></span>
             </div>
 
             {/* Accordions */}

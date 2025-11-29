@@ -41,14 +41,19 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     const addItem = (newItem: ICartLineItem) => {
         setItems((prev) => {
             const existing = prev.find((i) => i.variantId === newItem.variantId);
+            let newItems;
             if (existing) {
-                return prev.map((i) =>
+                newItems = prev.map((i) =>
                     i.variantId === newItem.variantId
                         ? { ...i, quantity: i.quantity + newItem.quantity }
                         : i
                 );
+            } else {
+                newItems = [...prev, newItem];
             }
-            return [...prev, newItem];
+            // Manually save to localStorage to avoid race condition with navigation
+            localStorage.setItem('cart', JSON.stringify(newItems));
+            return newItems;
         });
     };
 

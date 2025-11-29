@@ -8,9 +8,10 @@ import { cn } from '@/lib/utils';
 // Placeholder images - in a real app these would be real URLs
 // Using generic placeholders for now as I don't have the original images
 const IMAGES = [
-    { id: 1, src: 'https://placehold.co/600x600/d00000/ffffff?text=Cupping+Massager+1', alt: 'Renoheal Cupping Massager Main' },
-    { id: 2, src: 'https://placehold.co/600x600/d00000/ffffff?text=Close+Up', alt: 'Renoheal Close Up' },
-    { id: 3, src: 'https://placehold.co/600x600/d00000/ffffff?text=Product+Only', alt: 'Renoheal Product Only' },
+    { id: 1, src: 'https://placehold.co/600x600/00439c/ffffff?text=PS+Store+Card', alt: 'PS Store Card' },
+    { id: 2, src: 'https://placehold.co/600x600/003087/ffffff?text=Digital+Code', alt: 'Digital Code' },
+    { id: 3, src: 'https://placehold.co/600x600/0070d1/ffffff?text=Instant+Delivery', alt: 'Instant Delivery' },
+    { id: 4, src: 'https://placehold.co/600x600/000000/ffffff?text=Secure+Redeem', alt: 'Secure Redeem' },
 ];
 
 export function HeroGallery() {
