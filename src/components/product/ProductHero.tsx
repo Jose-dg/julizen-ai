@@ -7,6 +7,7 @@ import { HeroInfo } from './HeroInfo';
 
 import { useGlobal } from '@/lib/global-context';
 import { PLAYSTATION_PRICING } from '@/lib/pricing-data';
+import { FaPlaystation } from "react-icons/fa";
 
 function PlayStationGiftCard({ denomination, region }: { denomination: number, region: any }) {
     const { currency, formatPrice } = useGlobal();
@@ -81,22 +82,10 @@ function PlayStationGiftCard({ denomination, region }: { denomination: number, r
                                 style={{ backgroundColor: '#0639A2' }} // azul muy cercano al original
                             >
                                 {/* Logo PlayStation */}
-                                <div className="mb-6">
-                                    <svg
-                                        viewBox="0 0 200 200"
-                                        className="w-32 h-auto"
-                                        fill="white"
-                                        aria-hidden="true"
-                                    >
-                                        {/* Logo simplificado de PlayStation */}
-                                        <path d="M70 20v125l25 8V68c15-4 27 1 27 14 0 12-9 18-27 14v22c34 8 55-6 55-36 0-27-21-44-55-43-8 0-17 1-25 3z" />
-                                        <path d="M50 96c-20 6-30 14-30 26 0 16 14 26 38 26 12 0 23-2 34-6v-20c-11 4-21 6-30 6-11 0-17-3-17-8 0-4 4-7 13-10l-8-14z" />
-                                        <path d="M135 107v21c18 4 29 9 29 15 0 5-6 8-17 8-9 0-20-2-32-6v20c11 4 23 6 35 6 24 0 40-10 40-26 0-17-17-28-55-38z" />
-                                    </svg>
-                                </div>
+                                <FaPlaystation className="w-32 h-32 text-white mb-6 p-2" />
 
                                 {/* PlayStation Store */}
-                                <div className="flex items-center gap-3 mb-8">
+                                {/* <div className="flex items-center gap-3 mb-8">
                                     <div
                                         className="w-11 h-11 rounded-md flex items-center justify-center"
                                         style={{
@@ -122,7 +111,7 @@ function PlayStationGiftCard({ denomination, region }: { denomination: number, r
                                         <span className="font-light">PlayStation</span>
                                         <span className="font-normal">.Store</span>
                                     </div>
-                                </div>
+                                </div> */}
                             </div>
 
                             {/* Barra inferior DIGITAL CODE */}
@@ -149,11 +138,11 @@ function PlayStationGiftCard({ denomination, region }: { denomination: number, r
 
 const REGIONS = [
     { id: 'usa', name: 'USA', flag: '🇺🇸', currency: '$', currencyCode: 'USD' },
-    { id: 'eu', name: 'Europe', flag: '🇪🇸', currency: '€', currencyCode: 'EUR' },
+    { id: 'eu', name: 'Spain', flag: '🇪🇸', currency: '€', currencyCode: 'EUR' },
     { id: 'co', name: 'Colombia', flag: '🇨🇴', currency: '$', currencyCode: 'COP_PSN' },
-    { id: 'jp', name: 'Brazil', flag: '🇧🇷', currency: 'R$', currencyCode: 'BRL' },
-    { id: 'latam', name: 'Canada', flag: '🇨🇦', currency: '$', currencyCode: 'CAD' },
-    { id: 'asia', name: 'Arabia Saudi', flag: '🇸🇦', currency: '﷼', currencyCode: 'SAR' },
+    // { id: 'jp', name: 'Brazil', flag: '🇧🇷', currency: 'R$', currencyCode: 'BRL' },
+    // { id: 'latam', name: 'Canada', flag: '🇨🇦', currency: '$', currencyCode: 'CAD' },
+    // { id: 'asia', name: 'Arabia Saudi', flag: '🇸🇦', currency: '﷼', currencyCode: 'SAR' },
 ];
 
 export function ProductHero() {

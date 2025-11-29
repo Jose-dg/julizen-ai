@@ -164,7 +164,7 @@ export function HeroInfo({
 
             {/* CTAs */}
             <div className="space-y-3 pt-2">
-                <Button
+                {/* <Button
                     onClick={handleAddToCart}
                     disabled={isAdded}
                     className={cn(
@@ -179,7 +179,7 @@ export function HeroInfo({
                     ) : (
                         "Add to Cart"
                     )}
-                </Button>
+                </Button> */}
                 <Button onClick={handleBuyNow} variant="outline" className="w-full h-12 text-base font-bold uppercase tracking-wider border-blue-200 text-blue-600 hover:bg-blue-50 hover:text-blue-700">
                     Buy It Now
                 </Button>
