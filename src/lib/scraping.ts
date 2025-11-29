@@ -51,23 +51,23 @@ const cleanExpiredCache = () => {
 };
 
 // Función para obtener cache key
-const getCacheKey = (shopDomain: string, productHandle: string) => 
+const getCacheKey = (shopDomain: string, productHandle: string) =>
   `product:${shopDomain}:${productHandle}`;
 
 // Función para scrapear un producto individual
 export const scrapeSingleProduct = cache(async (
-  shopDomain: string, 
+  shopDomain: string,
   productHandle: string,
   options: ScrapingOptions = {}
 ): Promise<ScrapedProduct> => {
   const { timeout = 10000, retries = 3, cache = true, ttl = 15 } = options;
-  
+
   // Verificar cache primero
   if (cache) {
     cleanExpiredCache();
     const cacheKey = getCacheKey(shopDomain, productHandle);
     const cached = memoryCache.get(cacheKey);
-    
+
     if (cached && (Date.now() - cached.timestamp) < ttl * 60 * 1000) {
       return cached.data;
     }
@@ -75,9 +75,9 @@ export const scrapeSingleProduct = cache(async (
 
   // Construir URL del producto
   const productUrl = `https://${shopDomain}/products/${productHandle}.js`;
-  
+
   let lastError: Error | null = null;
-  
+
   // Reintentos
   for (let attempt = 1; attempt <= retries; attempt++) {
     try {
@@ -95,7 +95,7 @@ export const scrapeSingleProduct = cache(async (
       }
 
       const productData = await response.json();
-      
+
       // Transformar datos de Shopify a nuestro formato
       const scrapedProduct: ScrapedProduct = {
         id: productData.id?.toString() || `${shopDomain}-${productHandle}`,
@@ -138,7 +138,7 @@ export const scrapeSingleProduct = cache(async (
     } catch (error) {
       lastError = error as Error;
       console.warn(`Intento ${attempt} falló para ${shopDomain}/${productHandle}:`, error);
-      
+
       if (attempt < retries) {
         // Esperar antes del siguiente intento (backoff exponencial)
         await new Promise(resolve => setTimeout(resolve, Math.pow(2, attempt) * 1000));
@@ -162,31 +162,31 @@ export const scrapeMultipleProducts = async (
   const batchSize = 5;
   for (let i = 0; i < products.length; i += batchSize) {
     const batch = products.slice(i, i + batchSize);
-    
+
     const batchPromises = batch.map(async ({ shopDomain, productHandle }) => {
       try {
         const product = await scrapeSingleProduct(shopDomain, productHandle, options);
         return { success: true, product };
       } catch (error) {
-        return { 
-          success: false, 
+        return {
+          success: false,
           error: (error as Error).message,
           shopDomain,
-          productHandle 
+          productHandle
         };
       }
     });
 
     const batchResults = await Promise.all(batchPromises);
-    
+
     batchResults.forEach(result => {
       if (result.success) {
-        results.push(result.product);
+        results.push(result.product!);
       } else {
         errors.push({
-          shopDomain: result.shopDomain,
-          productHandle: result.productHandle,
-          error: result.error,
+          shopDomain: result.shopDomain!,
+          productHandle: result.productHandle!,
+          error: result.error!,
         });
       }
     });
@@ -214,7 +214,7 @@ export const scrapeShopInfo = async (shopDomain: string): Promise<{
 }> => {
   try {
     const shopUrl = `https://${shopDomain}/shop.json`;
-    
+
     const response = await fetch(shopUrl, {
       method: 'GET',
       headers: {
@@ -229,7 +229,7 @@ export const scrapeShopInfo = async (shopDomain: string): Promise<{
     }
 
     const shopData = await response.json();
-    
+
     return {
       name: shopData.name || shopDomain,
       description: shopData.description || '',
@@ -252,9 +252,9 @@ export const scrapeShopInfo = async (shopDomain: string): Promise<{
 export const isValidShopifyUrl = (url: string): boolean => {
   try {
     const urlObj = new URL(url);
-    return urlObj.hostname.includes('myshopify.com') || 
-           urlObj.hostname.includes('shopify.com') ||
-           urlObj.pathname.includes('/products/');
+    return urlObj.hostname.includes('myshopify.com') ||
+      urlObj.hostname.includes('shopify.com') ||
+      urlObj.pathname.includes('/products/');
   } catch {
     return false;
   }
@@ -265,14 +265,14 @@ export const parseShopifyUrl = (url: string): { shopDomain: string; productHandl
   try {
     const urlObj = new URL(url);
     const pathMatch = urlObj.pathname.match(/\/products\/([^\/\?]+)/);
-    
+
     if (pathMatch) {
       return {
         shopDomain: urlObj.hostname,
         productHandle: pathMatch[1],
       };
     }
-    
+
     return null;
   } catch {
     return null;
@@ -282,7 +282,7 @@ export const parseShopifyUrl = (url: string): { shopDomain: string; productHandl
 // Función para generar URL de imagen proxy (sin almacenar)
 export const getProxiedImageUrl = (originalUrl: string, width?: number, height?: number): string => {
   if (!originalUrl) return '/placeholder-product.jpg';
-  
+
   // Si es una URL relativa, convertir a absoluta
   if (originalUrl.startsWith('//')) {
     originalUrl = 'https:' + originalUrl;
@@ -290,13 +290,13 @@ export const getProxiedImageUrl = (originalUrl: string, width?: number, height?:
     // URL relativa, necesitaríamos el dominio de la tienda
     return originalUrl;
   }
-  
+
   // Para URLs absolutas, usar un proxy de imágenes
   const params = new URLSearchParams();
   params.set('url', originalUrl);
   if (width) params.set('w', width.toString());
   if (height) params.set('h', height.toString());
-  
+
   return `/api/image-proxy?${params.toString()}`;
 };
 

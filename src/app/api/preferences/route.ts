@@ -39,7 +39,7 @@ export async function GET(request: NextRequest) {
     // Obtener preferencias del backend
     try {
       const backendResponse = await apiClient.get('/users/preferences/');
-      
+
       return NextResponse.json({
         success: true,
         data: backendResponse.data,
@@ -48,7 +48,7 @@ export async function GET(request: NextRequest) {
       });
     } catch (error) {
       console.warn('Error al obtener preferencias del backend:', error);
-      
+
       // Retornar preferencias por defecto
       const defaultPreferences: UserPreferences = {
         favoriteBrands: [],
@@ -74,9 +74,9 @@ export async function GET(request: NextRequest) {
 
   } catch (error) {
     console.error('Error en GET /api/preferences:', error);
-    
+
     return NextResponse.json(
-      { 
+      {
         error: 'Error interno del servidor',
         message: error instanceof Error ? error.message : 'Error desconocido',
         timestamp: new Date().toISOString(),
@@ -90,7 +90,7 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { 
+    const {
       userId,
       preferences,
       type = 'all' // 'all', 'brands', 'shops', 'priceRange', 'notifications', 'searchHistory', 'recentlyViewed'
@@ -149,7 +149,7 @@ export async function POST(request: NextRequest) {
     // Actualizar en el backend
     try {
       const backendResponse = await apiClient.put('/users/preferences/', updateData);
-      
+
       return NextResponse.json({
         success: true,
         data: backendResponse.data,
@@ -158,7 +158,7 @@ export async function POST(request: NextRequest) {
       });
     } catch (error) {
       console.warn('Error al actualizar preferencias en backend:', error);
-      
+
       // En caso de error, retornar las preferencias actualizadas localmente
       return NextResponse.json({
         success: true,
@@ -171,9 +171,9 @@ export async function POST(request: NextRequest) {
 
   } catch (error) {
     console.error('Error en POST /api/preferences:', error);
-    
+
     return NextResponse.json(
-      { 
+      {
         error: 'Error interno del servidor',
         message: error instanceof Error ? error.message : 'Error desconocido',
         timestamp: new Date().toISOString(),
@@ -187,7 +187,7 @@ export async function POST(request: NextRequest) {
 export async function PUT(request: NextRequest) {
   try {
     const body = await request.json();
-    const { 
+    const {
       userId,
       type, // 'addBrand', 'addShop', 'addToSearchHistory', 'addToRecentlyViewed'
       value,
@@ -203,7 +203,7 @@ export async function PUT(request: NextRequest) {
 
     // Obtener preferencias actuales
     const currentResponse = await apiClient.get('/users/preferences/');
-    const currentPreferences = currentResponse.data;
+    const currentPreferences = currentResponse.data as any;
 
     let updateData: any = {};
 
@@ -230,7 +230,7 @@ export async function PUT(request: NextRequest) {
         const recentlyViewed = currentPreferences.recently_viewed || [];
         const newRecentlyViewed = [
           { shopDomain: data.shopDomain, productHandle: data.productHandle, viewedAt: new Date().toISOString() },
-          ...recentlyViewed.filter((item: any) => 
+          ...recentlyViewed.filter((item: any) =>
             !(item.shopDomain === data.shopDomain && item.productHandle === data.productHandle)
           )
         ].slice(0, 50); // Mantener solo 50 productos vistos
@@ -246,7 +246,7 @@ export async function PUT(request: NextRequest) {
 
     // Actualizar en el backend
     const backendResponse = await apiClient.put('/users/preferences/', updateData);
-    
+
     return NextResponse.json({
       success: true,
       data: backendResponse.data,
@@ -256,9 +256,9 @@ export async function PUT(request: NextRequest) {
 
   } catch (error) {
     console.error('Error en PUT /api/preferences:', error);
-    
+
     return NextResponse.json(
-      { 
+      {
         error: 'Error interno del servidor',
         message: error instanceof Error ? error.message : 'Error desconocido',
         timestamp: new Date().toISOString(),
@@ -272,7 +272,7 @@ export async function PUT(request: NextRequest) {
 export async function DELETE(request: NextRequest) {
   try {
     const body = await request.json();
-    const { 
+    const {
       userId,
       type, // 'removeBrand', 'removeShop', 'clearSearchHistory', 'clearRecentlyViewed'
       value
@@ -287,7 +287,7 @@ export async function DELETE(request: NextRequest) {
 
     // Obtener preferencias actuales
     const currentResponse = await apiClient.get('/users/preferences/');
-    const currentPreferences = currentResponse.data;
+    const currentPreferences = currentResponse.data as any;
 
     let updateData: any = {};
 
@@ -317,7 +317,7 @@ export async function DELETE(request: NextRequest) {
 
     // Actualizar en el backend
     const backendResponse = await apiClient.put('/users/preferences/', updateData);
-    
+
     return NextResponse.json({
       success: true,
       data: backendResponse.data,
@@ -327,9 +327,9 @@ export async function DELETE(request: NextRequest) {
 
   } catch (error) {
     console.error('Error en DELETE /api/preferences:', error);
-    
+
     return NextResponse.json(
-      { 
+      {
         error: 'Error interno del servidor',
         message: error instanceof Error ? error.message : 'Error desconocido',
         timestamp: new Date().toISOString(),

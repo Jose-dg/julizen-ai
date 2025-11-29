@@ -33,8 +33,8 @@ export function Header() {
                     {/* Mobile Nav Placeholder if needed */}
 
                     <Link href="/" className="text-2xl font-bold tracking-tighter flex items-center">
-                        <span className="text-gray-800">RENO</span>
-                        <span className="text-black">HEAL</span>
+                        <span className="text-gray-800">MONEY FOR GAMERS</span>
+                        {/* <span className="text-black">HEAL</span> */}
                     </Link>
 
                     <Button
@@ -99,14 +99,14 @@ export function Header() {
                         <button className="hover:text-red-600 transition-colors">
                             <User className="w-5 h-5" />
                         </button>
-                        <button className="relative hover:text-red-600 transition-colors">
+                        <Link href="/checkout" className="relative hover:text-red-600 transition-colors">
                             <ShoppingCart className="w-5 h-5" />
                             {items.length > 0 && (
                                 <span className="absolute -top-1 -right-1 bg-red-600 text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">
                                     {items.reduce((acc, item) => acc + item.quantity, 0)}
                                 </span>
                             )}
-                        </button>
+                        </Link>
                     </div>
                 </div>
             </div>

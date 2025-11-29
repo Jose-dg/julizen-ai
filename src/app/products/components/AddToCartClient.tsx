@@ -34,28 +34,18 @@ export function AddToCartClient({ product, shopDomain, productHandle }: AddToCar
 
     try {
       // Crear item del carrito
-      const cartItem = {
-        id: `${shopDomain}-${productHandle}-${selectedVariant?.id || 'default'}`,
-        productId: product.id,
-        shopDomain,
-        productHandle,
-        title: product.title,
-        price: selectedVariant?.price || product.price,
-        currency: product.currency,
-        image: product.images[0] || '',
+      // Crear request para el carrito
+      const cartRequest = {
+        product_id: product.id,
         quantity,
-        variant: selectedVariant ? {
-          id: selectedVariant.id,
-          title: selectedVariant.title,
-          option1: selectedVariant.option1,
-          option2: selectedVariant.option2,
-          option3: selectedVariant.option3,
-        } : undefined,
-        addedAt: new Date().toISOString(),
+        selected_variant: {
+          color: selectedVariant?.option1 || 'default',
+          size: selectedVariant?.option2 || 'default',
+        }
       };
 
-      // Agregar al carrito local
-      addItem(cartItem);
+      // Agregar al carrito
+      await addItem(cartRequest);
 
       // Simular llamada a API (en una implementación real)
       await new Promise(resolve => setTimeout(resolve, 1000));
@@ -83,7 +73,7 @@ export function AddToCartClient({ product, shopDomain, productHandle }: AddToCar
   const currentPrice = selectedVariant?.price || product.price;
   const originalPrice = selectedVariant?.compareAtPrice || product.originalPrice;
   const hasDiscount = originalPrice && originalPrice > currentPrice;
-  const discountPercentage = hasDiscount 
+  const discountPercentage = hasDiscount
     ? Math.round(((originalPrice - currentPrice) / originalPrice) * 100)
     : 0;
 
@@ -125,11 +115,10 @@ export function AddToCartClient({ product, shopDomain, productHandle }: AddToCar
                 <button
                   key={variant.id}
                   onClick={() => setSelectedVariant(variant)}
-                  className={`w-full p-3 text-left border rounded-lg transition-colors ${
-                    selectedVariant?.id === variant.id
+                  className={`w-full p-3 text-left border rounded-lg transition-colors ${selectedVariant?.id === variant.id
                       ? 'border-blue-500 bg-blue-50'
                       : 'border-slate-200 hover:border-slate-300'
-                  }`}
+                    }`}
                 >
                   <div className="flex justify-between items-center">
                     <span className="font-medium">{variant.title}</span>
@@ -137,9 +126,8 @@ export function AddToCartClient({ product, shopDomain, productHandle }: AddToCar
                       <div className="font-semibold">
                         {formatPrice(variant.price, product.currency)}
                       </div>
-                      <div className={`text-xs ${
-                        variant.available ? 'text-green-600' : 'text-red-600'
-                      }`}>
+                      <div className={`text-xs ${variant.available ? 'text-green-600' : 'text-red-600'
+                        }`}>
                         {variant.available ? 'Disponible' : 'Agotado'}
                       </div>
                     </div>

@@ -6,7 +6,7 @@ import { LocalCart, LocalCartItem } from '../route';
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { 
+    const {
       localCart,
       userId,
       direction = 'toBackend' // 'toBackend', 'fromBackend', 'bidirectional'
@@ -53,9 +53,9 @@ export async function POST(request: NextRequest) {
 
   } catch (error) {
     console.error('Error en sincronización de carrito:', error);
-    
+
     return NextResponse.json(
-      { 
+      {
         error: 'Error en sincronización',
         message: error instanceof Error ? error.message : 'Error desconocido',
         timestamp: new Date().toISOString(),
@@ -70,7 +70,7 @@ async function syncLocalToBackend(localCart: LocalCart, userId: string) {
   try {
     // Obtener carrito actual del backend
     const backendCart = await apiClient.get('/cart/');
-    const backendItems = backendCart.data.items || [];
+    const backendItems = (backendCart.data as any).items || [];
 
     // Crear mapa de items del backend para comparación
     const backendItemsMap = new Map(
@@ -78,15 +78,15 @@ async function syncLocalToBackend(localCart: LocalCart, userId: string) {
     );
 
     const syncResults = {
-      added: [],
-      updated: [],
-      errors: [],
+      added: [] as any[],
+      updated: [] as any[],
+      errors: [] as any[],
     };
 
     // Procesar cada item del carrito local
     for (const localItem of localCart.items) {
       try {
-        const backendItem = backendItemsMap.get(localItem.productId);
+        const backendItem = backendItemsMap.get(localItem.productId) as any;
 
         if (backendItem) {
           // Item existe en backend, actualizar cantidad si es diferente
@@ -146,9 +146,10 @@ async function syncLocalToBackend(localCart: LocalCart, userId: string) {
 async function syncFromBackend(userId: string) {
   try {
     const backendCart = await apiClient.get('/cart/');
-    
+    const data = backendCart.data as any;
+
     // Convertir items del backend al formato local
-    const localItems: LocalCartItem[] = (backendCart.data.items || []).map((item: any) => ({
+    const localItems: LocalCartItem[] = (data.items || []).map((item: any) => ({
       id: item.id,
       productId: item.product_id,
       shopDomain: item.product_data?.shop_domain || 'unknown',
@@ -165,8 +166,8 @@ async function syncFromBackend(userId: string) {
     const localCart: LocalCart = {
       items: localItems,
       lastSync: new Date().toISOString(),
-      total: parseFloat(backendCart.data.total_price || '0'),
-      itemsCount: backendCart.data.items_count || 0,
+      total: parseFloat(data.total_price || '0'),
+      itemsCount: data.items_count || 0,
     };
 
     return {
@@ -184,7 +185,7 @@ async function syncBidirectional(localCart: LocalCart, userId: string) {
   try {
     // Primero sincronizar local hacia backend
     const toBackendResult = await syncLocalToBackend(localCart, userId);
-    
+
     // Luego obtener el estado final del backend
     const fromBackendResult = await syncFromBackend(userId);
 
@@ -214,7 +215,7 @@ export async function GET(request: NextRequest) {
 
     // Obtener carrito del backend
     const backendCart = await apiClient.get('/cart/');
-    
+
     // En una implementación real, también obtendrías el carrito local
     // Por ahora retornamos solo el estado del backend
     return NextResponse.json({
@@ -229,9 +230,9 @@ export async function GET(request: NextRequest) {
 
   } catch (error) {
     console.error('Error al obtener estado de sincronización:', error);
-    
+
     return NextResponse.json(
-      { 
+      {
         error: 'Error al obtener estado de sincronización',
         message: error instanceof Error ? error.message : 'Error desconocido',
         timestamp: new Date().toISOString(),

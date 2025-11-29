@@ -24,7 +24,7 @@ export function ReviewsSection() {
                             <Star className="w-4 h-4 fill-current" />
                         </div>
                         <p className="text-gray-800 font-medium italic mb-2">
-                            "Super fast delivery! Received my code in less than 1 minute. Redeemed it on my PS5 immediately. Will buy again!"
+                            &quot;Super fast delivery! Received my code in less than 1 minute. Redeemed it on my PS5 immediately. Will buy again!&quot;
                         </p>
                         <p className="text-sm text-gray-500 font-bold">- Mike K.</p>
                     </div>

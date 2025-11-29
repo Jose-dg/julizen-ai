@@ -1,18 +1,18 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { 
-  scrapeSingleProduct, 
-  scrapeMultipleProducts, 
+import {
+  scrapeSingleProduct,
+  scrapeMultipleProducts,
   scrapeShopInfo,
   isValidShopifyUrl,
   parseShopifyUrl,
-  ScrapingOptions 
+  ScrapingOptions
 } from '@/lib/scraping';
 
 // POST /api/scrape - Scrapear productos
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { 
+    let {
       type = 'single', // 'single', 'multiple', 'shop'
       url,
       shopDomain,
@@ -93,9 +93,9 @@ export async function POST(request: NextRequest) {
 
   } catch (error) {
     console.error('Error en API de scraping:', error);
-    
+
     return NextResponse.json(
-      { 
+      {
         error: 'Error interno del servidor',
         message: error instanceof Error ? error.message : 'Error desconocido',
         timestamp: new Date().toISOString(),
@@ -123,7 +123,7 @@ export async function GET(request: NextRequest) {
       case 'validate':
         const isValid = isValidShopifyUrl(url);
         const parsed = isValid ? parseShopifyUrl(url) : null;
-        
+
         return NextResponse.json({
           valid: isValid,
           parsed: parsed,
@@ -148,7 +148,7 @@ export async function GET(request: NextRequest) {
 
         // Obtener información básica del producto
         const product = await scrapeSingleProduct(
-          parsedUrl.shopDomain, 
+          parsedUrl.shopDomain,
           parsedUrl.productHandle,
           { timeout: 5000, retries: 1 }
         );
@@ -175,9 +175,9 @@ export async function GET(request: NextRequest) {
 
   } catch (error) {
     console.error('Error en GET /api/scrape:', error);
-    
+
     return NextResponse.json(
-      { 
+      {
         error: 'Error interno del servidor',
         message: error instanceof Error ? error.message : 'Error desconocido',
         timestamp: new Date().toISOString(),

@@ -25,7 +25,7 @@ export function RelatedProducts({ product, shopDomain }: RelatedProductsProps) {
       try {
         // Simular carga de productos relacionados
         await new Promise(resolve => setTimeout(resolve, 1000));
-        
+
         // Por ahora, retornamos un array vacío
         // En producción, esto vendría de una API que busque productos similares
         setRelatedProducts([]);
@@ -88,10 +88,10 @@ export function RelatedProducts({ product, shopDomain }: RelatedProductsProps) {
       <h2 className="text-2xl font-bold mb-6">Productos relacionados</h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {relatedProducts.map((relatedProduct) => {
-          const hasDiscount = relatedProduct.originalPrice && 
+          const hasDiscount = relatedProduct.originalPrice &&
             relatedProduct.originalPrice > relatedProduct.price;
-          const discountPercentage = hasDiscount 
-            ? Math.round(((relatedProduct.originalPrice - relatedProduct.price) / relatedProduct.originalPrice) * 100)
+          const discountPercentage = hasDiscount
+            ? Math.round(((relatedProduct.originalPrice! - relatedProduct.price) / relatedProduct.originalPrice!) * 100)
             : 0;
 
           return (
@@ -115,14 +115,14 @@ export function RelatedProducts({ product, shopDomain }: RelatedProductsProps) {
                   </div>
                 </div>
               </Link>
-              
+
               <CardContent className="p-4">
                 <Link href={`/products/${relatedProduct.shopDomain}/${relatedProduct.handle}`}>
                   <h3 className="font-semibold mb-2 line-clamp-2 hover:text-blue-600 transition-colors">
                     {relatedProduct.title}
                   </h3>
                 </Link>
-                
+
                 <div className="flex items-center justify-between mb-2">
                   <div>
                     <p className="text-lg font-bold text-blue-600">
@@ -130,7 +130,7 @@ export function RelatedProducts({ product, shopDomain }: RelatedProductsProps) {
                     </p>
                     {hasDiscount && (
                       <p className="text-sm text-slate-500 line-through">
-                        {formatPrice(relatedProduct.originalPrice, relatedProduct.currency)}
+                        {formatPrice(relatedProduct.originalPrice!, relatedProduct.currency)}
                       </p>
                     )}
                   </div>
