@@ -1,9 +1,28 @@
+'use client';
+
 import React from 'react';
+import { useSession } from 'next-auth/react';
 import { CheckoutForm } from '@/components/checkout/CheckoutForm';
 import { OrderSummary } from '@/components/checkout/OrderSummary';
+import { WholesaleCheckout } from '@/components/checkout/WholesaleCheckout';
 import Link from 'next/link';
+import { Loader2 } from 'lucide-react';
 
 export default function CheckoutPage() {
+    const { data: session, status } = useSession();
+
+    if (status === 'loading') {
+        return (
+            <div className="min-h-screen flex items-center justify-center">
+                <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
+            </div>
+        );
+    }
+
+    if (session?.user?.user_type === 'wholesale') {
+        return <WholesaleCheckout />;
+    }
+
     return (
         <div className="min-h-screen bg-white flex flex-col md:flex-row">
             {/* Left Column: Form */}
@@ -11,7 +30,7 @@ export default function CheckoutPage() {
                 <header className="px-6 py-6 md:px-12 md:py-8">
                     <Link href="/" className="text-2xl font-bold tracking-tighter flex items-center">
                         <span className="text-black-800">MONEY FOR GAMERS</span>
-                        
+
                     </Link>
                 </header>
                 <main className="flex-1 px-6 md:px-12">

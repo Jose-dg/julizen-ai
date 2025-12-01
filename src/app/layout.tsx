@@ -69,21 +69,27 @@ export const metadata: Metadata = {
   },
 };
 
+import { Providers } from '@/components/providers';
+import { Header } from '@/components/layout/Header';
+
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="es">
+    <html lang="en">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <GlobalProvider>
-          <CartProvider>
-            {children}
-          </CartProvider>
-        </GlobalProvider>
+        <Providers>
+          <GlobalProvider>
+            <CartProvider>
+              <Header />
+              {children}
+            </CartProvider>
+          </GlobalProvider>
+        </Providers>
       </body>
     </html>
   );

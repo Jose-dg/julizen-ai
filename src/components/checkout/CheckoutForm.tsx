@@ -11,11 +11,14 @@ import Link from 'next/link';
 import { useGlobal } from '@/lib/global-context';
 import { EXCHANGE_RATES } from '@/lib/pricing-data';
 
-// Claves de SANDBOX (no subirlas a Git)
+// Production
 const WOMPI_PUBLIC_KEY = 'pub_prod_qtAXfUVyN0Qsqo7ccx2h6ZXf1goGHaRr';
 
-// 👇 Copia EXACTAMENTE el valor de "Integridad" que ves en el dashboard
+// Sandbox
+// const WOMPI_PUBLIC_KEY = 'pub_test_lAgGicdsUuDbioGdH4vOGZxQAbjCO2Eq';
+
 const WOMPI_INTEGRITY_SECRET = 'prod_integrity_58O2Ew7ULrkgmNMtCNTKyHHWuSBW9TH2';
+// const WOMPI_INTEGRITY_SECRET = 'test_integrity_j3sdrimTRdQDcbUzbqU419m7Xixxqtu0';
 
 export function CheckoutForm() {
     const { totalPrice } = useCart();
@@ -80,6 +83,16 @@ export function CheckoutForm() {
             WOMPI_INTEGRITY_SECRET,
         );
 
+        // Save customer info to localStorage for the thanks page
+        localStorage.setItem('customer_info', JSON.stringify({
+            email,
+            firstName,
+            lastName,
+            phone,
+            address,
+            city
+        }));
+
         const checkout = new (window as any).WidgetCheckout({
             currency: 'COP',
             amountInCents: totalCents,
@@ -89,7 +102,7 @@ export function CheckoutForm() {
             signature: {
                 integrity: signatureHash,
             },
-            redirectUrl: 'http://localhost:3000/thank-you',
+            redirectUrl: `${window.location.origin}/thanks`,
             customerData: {
                 email,
                 fullName: `${firstName} ${lastName}`,
