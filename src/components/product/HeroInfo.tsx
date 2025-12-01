@@ -28,7 +28,7 @@ export function HeroInfo({
     onSelectRegion,
     regions
 }: HeroInfoProps) {
-    const { addItem, clearCart } = useCart();
+    const { addItem, clearCart, openCart } = useCart();
     const router = useRouter();
     const { currency, formatPrice } = useGlobal();
 
@@ -47,7 +47,7 @@ export function HeroInfo({
 
     const oldPrice = price * 1.1;
 
-    const [isAdded, setIsAdded] = useState(false);
+
 
     const handleAddToCart = () => {
         addItem({
@@ -59,8 +59,7 @@ export function HeroInfo({
             image: 'https://placehold.co/600x600/00439c/ffffff?text=PSN+Card',
             variantTitle: `${selectedRegion.currency}${selectedDenomination} - ${selectedRegion.name}`
         });
-        setIsAdded(true);
-        setTimeout(() => setIsAdded(false), 2000);
+        openCart();
     };
 
     const handleBuyNow = () => {
@@ -146,7 +145,7 @@ export function HeroInfo({
             </div>
 
             {/* Benefits */}
-            {/* <div className="space-y-2">
+            <div className="space-y-2">
                 {[
                     "Code delivered immediately via email",
                     "Valid for all PS4 & PS5 consoles",
@@ -160,26 +159,16 @@ export function HeroInfo({
                         {benefit}
                     </div>
                 ))}
-            </div> */}
+            </div>
 
             {/* CTAs */}
             <div className="space-y-3 pt-2">
-                {/* <Button
+                <Button
                     onClick={handleAddToCart}
-                    disabled={isAdded}
-                    className={cn(
-                        "w-full h-14 text-lg font-bold uppercase tracking-wider transition-all shadow-lg",
-                        isAdded ? "bg-green-600 hover:bg-green-700" : "bg-blue-600 hover:bg-blue-700 hover:scale-[1.02] shadow-blue-200"
-                    )}
+                    className="w-full h-14 text-lg font-bold uppercase tracking-wider transition-all shadow-lg bg-blue-600 hover:bg-blue-700 hover:scale-[1.02] shadow-blue-200"
                 >
-                    {isAdded ? (
-                        <span className="flex items-center gap-2">
-                            <Check className="w-5 h-5" /> Added to Cart
-                        </span>
-                    ) : (
-                        "Add to Cart"
-                    )}
-                </Button> */}
+                    Add to Cart
+                </Button>
                 <Button onClick={handleBuyNow} variant="outline" className="w-full h-12 text-base font-bold uppercase tracking-wider border-blue-200 text-blue-600 hover:bg-blue-50 hover:text-blue-700">
                     Buy It Now
                 </Button>

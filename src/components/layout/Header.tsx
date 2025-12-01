@@ -16,7 +16,7 @@ import {
 
 export function Header() {
     const { currency, setCurrency, language, setLanguage } = useGlobal();
-    const { items } = useCart();
+    const { items, openCart } = useCart();
 
     return (
         <header className="bg-white border-b border-gray-100 sticky top-0 z-50">
@@ -99,14 +99,17 @@ export function Header() {
                         <button className="hover:text-red-600 transition-colors">
                             <User className="w-5 h-5" />
                         </button>
-                        <Link href="/checkout" className="relative hover:text-red-600 transition-colors">
+                        <button
+                            onClick={openCart}
+                            className="relative hover:text-red-600 transition-colors"
+                        >
                             <ShoppingCart className="w-5 h-5" />
                             {items.length > 0 && (
                                 <span className="absolute -top-1 -right-1 bg-red-600 text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">
                                     {items.reduce((acc, item) => acc + item.quantity, 0)}
                                 </span>
                             )}
-                        </Link>
+                        </button>
                     </div>
                 </div>
             </div>

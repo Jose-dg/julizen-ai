@@ -27,12 +27,6 @@ export default function CheckoutPage() {
         <div className="min-h-screen bg-white flex flex-col md:flex-row">
             {/* Left Column: Form */}
             <div className="flex-1 md:w-[50%] flex flex-col">
-                <header className="px-6 py-6 md:px-12 md:py-8">
-                    <Link href="/" className="text-2xl font-bold tracking-tighter flex items-center">
-                        <span className="text-black-800">MONEY FOR GAMERS</span>
-
-                    </Link>
-                </header>
                 <main className="flex-1 px-6 md:px-12">
                     <CheckoutForm />
                 </main>

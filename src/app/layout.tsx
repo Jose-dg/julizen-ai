@@ -72,6 +72,8 @@ export const metadata: Metadata = {
 import { Providers } from '@/components/providers';
 import { Header } from '@/components/layout/Header';
 
+import { CartSidebar } from "@/components/cart/CartSidebar";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -86,6 +88,7 @@ export default function RootLayout({
           <GlobalProvider>
             <CartProvider>
               <Header />
+              <CartSidebar />
               {children}
             </CartProvider>
           </GlobalProvider>

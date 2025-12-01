@@ -10,6 +10,9 @@ type CartContextType = {
     clearCart: () => void;
     totalPrice: IMoneyV2;
     subtotalPrice: IMoneyV2;
+    isCartOpen: boolean;
+    openCart: () => void;
+    closeCart: () => void;
 };
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
@@ -75,8 +78,13 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         currencyCode: 'EUR'
     };
 
+    const [isCartOpen, setIsCartOpen] = useState(false);
+
+    const openCart = () => setIsCartOpen(true);
+    const closeCart = () => setIsCartOpen(false);
+
     return (
-        <CartContext.Provider value={{ items, addItem, removeItem, clearCart, totalPrice, subtotalPrice }}>
+        <CartContext.Provider value={{ items, addItem, removeItem, clearCart, totalPrice, subtotalPrice, isCartOpen, openCart, closeCart }}>
             {children}
         </CartContext.Provider>
     );

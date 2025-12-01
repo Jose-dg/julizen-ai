@@ -20,7 +20,7 @@ interface ProductCardProps {
 }
 
 export function ProductCard({ product }: ProductCardProps) {
-    const { addItem } = useCart();
+    const { addItem, openCart } = useCart();
 
     const handleAddToCart = () => {
         addItem({
@@ -32,6 +32,7 @@ export function ProductCard({ product }: ProductCardProps) {
             image: product.image,
             variantTitle: 'Standard'
         });
+        openCart();
     };
 
     return (

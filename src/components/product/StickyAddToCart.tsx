@@ -8,7 +8,7 @@ import { useCart } from '@/lib/cart-context';
 import Image from 'next/image';
 
 export function StickyAddToCart() {
-    const { addItem } = useCart();
+    const { addItem, openCart } = useCart();
     const [isVisible, setIsVisible] = useState(false);
 
     const handleAddToCart = () => {
@@ -21,6 +21,7 @@ export function StickyAddToCart() {
             image: 'https://placehold.co/600x600/00439c/ffffff?text=PSN+Card',
             variantTitle: '$50'
         });
+        openCart();
     };
 
     useEffect(() => {
