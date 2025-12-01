@@ -1,6 +1,5 @@
 // Hooks personalizados
-export { useAuth } from './use-auth';
-export { useAuthSSR, getServerSideUser } from './use-auth-ssr';
+
 export { useUser } from './use-user';
 export { useProducts } from './use-products';
 export { useAI } from './use-ai';

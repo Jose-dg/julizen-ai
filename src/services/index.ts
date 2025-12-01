@@ -1,5 +1,5 @@
 // Servicios de API
-export { AuthService } from './auth.service';
+
 export { UserService } from './user.service';
 export { ProductsService } from './products.service';
 export { CartService } from './cart.service';

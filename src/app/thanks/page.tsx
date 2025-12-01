@@ -1,13 +1,13 @@
 'use client';
 
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { useCart } from '@/lib/cart-context';
 import { CheckCircle, Loader2 } from 'lucide-react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 
-export default function ThanksPage() {
+function ThanksContent() {
     const searchParams = useSearchParams();
     const transactionId = searchParams.get('id');
     const { items, totalPrice, clearCart } = useCart();
@@ -117,5 +117,13 @@ export default function ThanksPage() {
                 </div>
             </div>
         </div>
+    );
+}
+
+export default function ThanksPage() {
+    return (
+        <Suspense fallback={<div className="min-h-screen flex items-center justify-center"><Loader2 className="w-8 h-8 animate-spin" /></div>}>
+            <ThanksContent />
+        </Suspense>
     );
 }

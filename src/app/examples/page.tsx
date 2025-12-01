@@ -1,7 +1,8 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useProducts, useAuth, useCartStore } from '@/hooks';
+import { useSession, signOut } from 'next-auth/react';
+import { useProducts, useCartStore } from '@/hooks';
 import { ProductCard } from '@/components/examples/product-card';
 import { Product } from '@/types/api';
 import { Button } from '@/components/ui/button';
@@ -13,28 +14,25 @@ import { ShoppingCart, Search, Filter, User, LogOut } from 'lucide-react';
 export default function ExamplesPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('');
-  
-  const { 
-    products, 
-    categories, 
-    isLoading: productsLoading, 
+  const { data: session, status } = useSession();
+  const isAuthenticated = status === 'authenticated';
+  const authLoading = status === 'loading';
+
+  const {
+    products,
+    categories,
+    isLoading: productsLoading,
     error: productsError,
     fetchProducts,
     fetchCategories,
     searchProducts,
     fetchProductsByCategory,
   } = useProducts();
-  
-  const { 
-    isAuthenticated, 
-    logout, 
-    isLoading: authLoading 
-  } = useAuth();
-  
-  const { 
-    getItemsCount, 
-    getTotalPrice, 
-    fetchCart 
+
+  const {
+    getItemsCount,
+    getTotalPrice,
+    fetchCart
   } = useCartStore();
 
   // Cargar datos iniciales
@@ -67,7 +65,7 @@ export default function ExamplesPage() {
   };
 
   const handleLogout = async () => {
-    await logout();
+    await signOut();
   };
 
   return (
@@ -80,7 +78,7 @@ export default function ExamplesPage() {
               <h1 className="text-2xl font-bold">DaydreamShop</h1>
               <Badge variant="secondary">Demo API</Badge>
             </div>
-            
+
             <div className="flex items-center space-x-4">
               {/* Carrito */}
               <Button variant="outline" className="relative">
@@ -92,15 +90,15 @@ export default function ExamplesPage() {
                   </Badge>
                 )}
               </Button>
-              
+
               {/* Usuario */}
               {isAuthenticated ? (
                 <div className="flex items-center space-x-2">
                   <User className="h-4 w-4" />
-                  <span className="text-sm">Usuario</span>
-                  <Button 
-                    variant="ghost" 
-                    size="sm" 
+                  <span className="text-sm">{session?.user?.name || 'Usuario'}</span>
+                  <Button
+                    variant="ghost"
+                    size="sm"
                     onClick={handleLogout}
                     disabled={authLoading}
                   >
@@ -142,7 +140,7 @@ export default function ExamplesPage() {
                   </Button>
                 </div>
               </div>
-              
+
               {/* Categorías */}
               <div className="flex gap-2 flex-wrap">
                 <Button
@@ -182,8 +180,8 @@ export default function ExamplesPage() {
           <Card className="mb-8 border-destructive">
             <CardContent className="pt-6">
               <p className="text-destructive">Error: {productsError}</p>
-              <Button 
-                variant="outline" 
+              <Button
+                variant="outline"
                 onClick={() => fetchProducts()}
                 className="mt-2"
               >
