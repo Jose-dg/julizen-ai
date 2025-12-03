@@ -10,13 +10,23 @@ import { Tag } from 'lucide-react';
 import { useGlobal } from '@/lib/global-context';
 
 export function OrderSummary() {
-    const { items, totalPrice } = useCart();
+    const { items, totalPrice, discountCode: appliedCode, isDiscountApplied, applyDiscount } = useCart();
     const { currency, formatPrice } = useGlobal();
     const [discountCode, setDiscountCode] = useState('');
 
     // Dummy shipping calculation
     const shipping = totalPrice.amount > 90 ? 0 : 4.95;
-    const finalTotal = totalPrice.amount + shipping;
+    const discount = isDiscountApplied ? totalPrice.amount : 0;
+    const finalTotal = totalPrice.amount + shipping - discount;
+
+    const handleApplyDiscount = () => {
+        const success = applyDiscount(discountCode);
+        if (success) {
+            alert('Discount applied! Total is now $0.');
+        } else {
+            alert('Invalid discount code.');
+        }
+    };
 
     return (
         // <div className="bg-gray-50 p-6 md:p-8 rounded-lg md:h-screen md:sticky md:top-0 border-l border-gray-200">
@@ -53,8 +63,13 @@ export function OrderSummary() {
                     onChange={(e) => setDiscountCode(e.target.value)}
                     className="bg-white"
                 />
-                <Button variant="outline" className="bg-gray-200 hover:bg-gray-300 border-transparent">
-                    Apply
+                <Button
+                    variant="outline"
+                    className="bg-gray-200 hover:bg-gray-300 border-transparent"
+                    onClick={handleApplyDiscount}
+                    disabled={isDiscountApplied || !discountCode}
+                >
+                    {isDiscountApplied ? 'Applied' : 'Apply'}
                 </Button>
             </div>
 
@@ -69,6 +84,12 @@ export function OrderSummary() {
                         {shipping === 0 ? 'Free' : formatPrice(shipping)}
                     </span>
                 </div>
+                {isDiscountApplied && (
+                    <div className="flex justify-between text-green-600">
+                        <span>Discount ({appliedCode})</span>
+                        <span className="font-medium">-{formatPrice(discount)}</span>
+                    </div>
+                )}
             </div>
 
             <div className="flex justify-between items-center border-t border-gray-200 pt-6 mt-6">

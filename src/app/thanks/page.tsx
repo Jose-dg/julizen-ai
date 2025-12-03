@@ -10,6 +10,7 @@ import { Button } from '@/components/ui/button';
 function ThanksContent() {
     const searchParams = useSearchParams();
     const transactionId = searchParams.get('id');
+    const amountParam = searchParams.get('amount');
     const { items, totalPrice, clearCart } = useCart();
     const [status, setStatus] = useState<'loading' | 'success' | 'error'>('loading');
     const processedRef = useRef(false);
@@ -21,14 +22,17 @@ function ThanksContent() {
             processedRef.current = true;
 
             try {
-                // Get customer info from localStorage
+                // Get customer info and order items from localStorage
                 const customerInfoStr = localStorage.getItem('customer_info');
                 const customerInfo = customerInfoStr ? JSON.parse(customerInfoStr) : {};
+
+                const orderItemsStr = localStorage.getItem('order_items');
+                const orderItems = orderItemsStr ? JSON.parse(orderItemsStr) : items;
 
                 // Construct payload for Django Backend
                 const payload = {
                     name: transactionId, // Using transaction ID as order reference
-                    store_id: "69063c2b-27d2-4a09-b1be-3ef733c29041",
+                    store_id: "97e3d8ad-8376-454a-9133-5d13c7a7af85",
                     customer: {
                         first_name: customerInfo.firstName || "Guest",
                         last_name: customerInfo.lastName || "User",
@@ -39,9 +43,9 @@ function ThanksContent() {
                         company: "N/A", // Placeholder as we don't collect company
                         phone: customerInfo.phone
                     },
-                    total_price: totalPrice.amount.toString(),
-                    line_items: items.map(item => ({
-                        sku: item.id, // Assuming ID is SKU
+                    total_price: amountParam === '0' ? "0" : totalPrice.amount.toString(),
+                    line_items: orderItems.map((item: any) => ({
+                        sku: item.sku || item.id, // Use SKU if available, fallback to ID
                         quantity: item.quantity,
                         price: item.price.amount.toString()
                     }))
@@ -50,8 +54,9 @@ function ThanksContent() {
                 console.log('Sending order to Django:', payload);
 
                 // Send to Django Backend
-                const apiUrl = process.env.NEXT_PUBLIC_DJANGO_API_URL || 'http://localhost:8000';
-                const response = await fetch(`${apiUrl}/api/manual/order/create/`, {
+                const apiUrl = process.env.NEXT_PUBLIC_DJANGO_API_URL;
+                // const response = await fetch(`${apiUrl}/api/webhook/order/create/`, {
+                const response = await fetch(`http://localhost:8000/api/webhook/order/create/`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -64,6 +69,7 @@ function ThanksContent() {
                     setStatus('success');
                     clearCart();
                     localStorage.removeItem('customer_info');
+                    localStorage.removeItem('order_items');
                 } else {
                     console.error('Django order creation failed:', response.statusText);
                     // Even if backend fails, we might want to show success to user if payment was real?

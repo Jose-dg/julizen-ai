@@ -13,6 +13,9 @@ type CartContextType = {
     isCartOpen: boolean;
     openCart: () => void;
     closeCart: () => void;
+    discountCode: string;
+    isDiscountApplied: boolean;
+    applyDiscount: (code: string) => boolean;
 };
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
@@ -20,6 +23,8 @@ const CartContext = createContext<CartContextType | undefined>(undefined);
 export function CartProvider({ children }: { children: React.ReactNode }) {
     const [items, setItems] = useState<ICartLineItem[]>([]);
     const [isLoaded, setIsLoaded] = useState(false);
+    const [discountCode, setDiscountCode] = useState('');
+    const [isDiscountApplied, setIsDiscountApplied] = useState(false);
 
     // Load from local storage on mount
     useEffect(() => {
@@ -64,7 +69,20 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         setItems((prev) => prev.filter((i) => i.variantId !== variantId));
     };
 
-    const clearCart = () => setItems([]);
+    const clearCart = () => {
+        setItems([]);
+        setDiscountCode('');
+        setIsDiscountApplied(false);
+    };
+
+    const applyDiscount = (code: string): boolean => {
+        if (code === 'BILLIONOFDOLLAR') {
+            setDiscountCode(code);
+            setIsDiscountApplied(true);
+            return true;
+        }
+        return false;
+    };
 
     const totalAmount = items.reduce((acc, item) => acc + item.price.amount * item.quantity, 0);
 
@@ -84,7 +102,20 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     const closeCart = () => setIsCartOpen(false);
 
     return (
-        <CartContext.Provider value={{ items, addItem, removeItem, clearCart, totalPrice, subtotalPrice, isCartOpen, openCart, closeCart }}>
+        <CartContext.Provider value={{
+            items,
+            addItem,
+            removeItem,
+            clearCart,
+            totalPrice,
+            subtotalPrice,
+            isCartOpen,
+            openCart,
+            closeCart,
+            discountCode,
+            isDiscountApplied,
+            applyDiscount
+        }}>
             {children}
         </CartContext.Provider>
     );
